@@ -1,12 +1,9 @@
 import cv2
 import numpy as np
-import time
-
-clahefilter = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(16,16))
-
 
 image = cv2.imread('4.jpg')
 def overexposure(img):
+
     GLARE_MIN = np.array([0, 0, 50],np.uint8)
     GLARE_MAX = np.array([0, 0, 225],np.uint8)
 
