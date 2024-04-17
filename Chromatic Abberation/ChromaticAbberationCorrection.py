@@ -15,7 +15,7 @@ def RemoveChromaticAbberation(image):
     arr = __Rotate(arr)
     arr = __RemoveChromaticAbberation(threshold, arr)
 
-    #Соединение и соединение каналов в обработанное изображение
+    #Поворот и соединение каналов в обработанное изображение
     arr = __Rotate(arr)
     result=cv2.merge(arr)
     return result
