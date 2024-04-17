@@ -37,7 +37,7 @@ def __Saturate(A,B=0):
     return C
 
 #Устранение, прогоняет каналы по одному положению (высота, ширина)
-def __RemoveChromaticAbberation(threshold,arr, isRotated):
+def __RemoveChromaticAbberation(threshold,arr):
     #Получение высоты и ширины.
     height =arr[0].shape[0]
     width =arr[0].shape[1]
