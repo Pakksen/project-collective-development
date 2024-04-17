@@ -21,6 +21,7 @@ def RemoveChromaticAbberation(image):
     result=cv2.transpose(arr)
     return result
 
+#Поворот массива RGB
 def __Rotate(arr):
     rotate = cv2.merge(arr)
     rotate=cv2.transpose(rotate)
