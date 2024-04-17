@@ -2,7 +2,7 @@ import cv2
 import numpy
 
 #Основной алгоритм для вызова
-def Correct(image):
+def RemoveChromaticAbberation(image):
     #разбиваем изображения на каналы RGB для более удобной работы
     arr= cv2.split(image)
     
@@ -10,21 +10,25 @@ def Correct(image):
     threshold = 30
 
     #Горизонтальное устранение хроматических аббераций
-    arr = rmCA(threshold,arr,False)
-    
+    arr = __RemoveChromaticAbberation(threshold,arr,False)
     #Поворот и вертикальное устранение хроматических аббераций
-    rotate = cv2.merge(arr)
-    rotate=cv2.transpose(rotate)
-    arr=cv2.split(rotate)
-    arr = rmCA(threshold, arr, True)
+    arr = __Rotate(arr)
+    arr = __RemoveChromaticAbberation(threshold, arr, True)
 
     #Соединение и соединение каналов в обработанное изображение
+    arr = cv2.merge(arr)
+    arr = __Rotate(arr)
+    result=cv2.transpose(arr)
+    return result
+
+def __Rotate(arr):
     rotate = cv2.merge(arr)
-    result=cv2.transpose(rotate)
+    rotate=cv2.transpose(rotate)
+    result=cv2.split(rotate)
     return result
 
 #Сатурация для избегания выхода значения за рамки
-def SaturateSum(A,B):
+def __Saturate(A,B=0):
     C=A+B
     if C>255:
         C=255
@@ -32,15 +36,8 @@ def SaturateSum(A,B):
         C=0
     return C
 
-def Saturate(A):
-    if A>255:
-        A=255
-    elif A<0:
-        A=0
-    return A
-
 #Устранение, прогоняет каналы по одному положению (высота, ширина)
-def rmCA(threshold,arr, isRotated):
+def __RemoveChromaticAbberation(threshold,arr, isRotated):
     #Получение высоты и ширины.
     height =arr[0].shape[0]
     width =arr[0].shape[1]
@@ -97,18 +94,18 @@ def rmCA(threshold,arr, isRotated):
                     bdiff = numpy.int64(bptr[k]) - numpy.int64(gptr[k])
                     rdiff = numpy.int64(rptr[k]) - numpy.int64(gptr[k])
                     if (bdiff > bgmaxVal): 
-                        bptr[k] = SaturateSum(bgmaxVal , gptr[k])
+                        bptr[k] = __Saturate(bgmaxVal , gptr[k])
                     elif (bdiff < bgminVal):
-                        bptr[k] = SaturateSum(bgminVal , gptr[k])
+                        bptr[k] = __Saturate(bgminVal , gptr[k])
                     else:
-                        bptr[k] = Saturate(bptr[k])
+                        bptr[k] = __Saturate(bptr[k])
                     
                     if (rdiff > rgmaxVal):
-                        rptr[k] = SaturateSum(rgmaxVal, gptr[k])
+                        rptr[k] = __Saturate(rgmaxVal, gptr[k])
                     elif (rdiff < rgminVal):
-                        rptr[k] = SaturateSum(rgminVal , gptr[k])
+                        rptr[k] = __Saturate(rgminVal , gptr[k])
                     else:
-                        rptr[k] = Saturate(rptr[k])
+                        rptr[k] = __Saturate(rptr[k])
                 j = rpos - 2
         arr[0][i] = bptr
         arr[1][i] = gptr
