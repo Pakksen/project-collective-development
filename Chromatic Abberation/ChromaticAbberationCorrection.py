@@ -10,15 +10,14 @@ def RemoveChromaticAbberation(image):
     threshold = 30
 
     #Горизонтальное устранение хроматических аббераций
-    arr = __RemoveChromaticAbberation(threshold,arr,False)
+    arr = __RemoveChromaticAbberation(threshold,arr)
     #Поворот и вертикальное устранение хроматических аббераций
     arr = __Rotate(arr)
-    arr = __RemoveChromaticAbberation(threshold, arr, True)
+    arr = __RemoveChromaticAbberation(threshold, arr)
 
     #Соединение и соединение каналов в обработанное изображение
-    arr = cv2.merge(arr)
     arr = __Rotate(arr)
-    result=cv2.transpose(arr)
+    result=cv2.merge(arr)
     return result
 
 #Поворот массива RGB
@@ -85,7 +84,7 @@ def __RemoveChromaticAbberation(threshold,arr):
                 if lpos<=0:
                     lpos=0
 
-
+                #
                 bgmaxVal = max(numpy.int64(bptr[lpos]) - numpy.int64(gptr[lpos]), numpy.int64(bptr[rpos]) - numpy.int64(gptr[rpos]))
                 bgminVal = min(numpy.int64(bptr[lpos]) - numpy.int64(gptr[lpos]), numpy.int64(bptr[rpos]) - numpy.int64(gptr[rpos]))
                 rgmaxVal = max(numpy.int64(rptr[lpos]) - numpy.int64(gptr[lpos]), numpy.int64(rptr[rpos]) - numpy.int64(gptr[rpos]))
